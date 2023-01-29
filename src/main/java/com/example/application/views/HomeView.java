@@ -53,8 +53,6 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
 
     public HomeView() {
         getStyle().set("background-color", "#FCFFE7");
-
-
         setContent(main);
     }
 
@@ -88,18 +86,23 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         createPostDialog.add(new MakePostView(user));
         createPostButton = new Button("Create a new post", l -> createPostDialog.open());
 
-        Button closecDialog = new Button("Close", l -> createPostDialog.close());
-        createPostDialog.getFooter().add(closecDialog);
+        Button closeDialog = new Button("Close", l -> createPostDialog.close());
+        createPostDialog.getFooter().add(closeDialog);
 
         createPostLayout.getStyle().set("background-color", "white");
         createPostLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         createPostLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         createPostLayout.add(createPostButton);
-
+        createPostLayout.setWidth("200px");
+        createPostLayout.setHeight("60px");
         main.add(createPostLayout);
+        main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, createPostLayout);
     }
 
+    private void makeHomePage(){
+
+    }
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         userID = beforeEnterEvent.getRouteParameters().get("userID").orElse("nu s-a primit id");
