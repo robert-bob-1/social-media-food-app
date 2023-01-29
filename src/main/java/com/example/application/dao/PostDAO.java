@@ -7,6 +7,7 @@ import com.example.application.model.Post;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class PostDAO {
 
     private String createSelectByIDQuery() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT title, description, details, ingredients, " +
+        sb.append("SELECT title, description, picture, details, ingredients, " +
                     "preparation, likes, user_ID" +
                   "FROM post" +
                   "WHERE ID = ?");
@@ -44,8 +45,9 @@ public class PostDAO {
                         resultSet.getString(3),
                         resultSet.getString(4),
                         resultSet.getString(5),
-                        Integer.parseInt(resultSet.getString(6)),
-                        userBL.getUser(resultSet.getString(7)));
+                        resultSet.getString(6),
+                        Integer.parseInt(resultSet.getString(7)),
+                        userBL.getUser(resultSet.getString(8)));
                 return post;
             }
 
@@ -61,7 +63,7 @@ public class PostDAO {
 
     private String createSelectByUserIDQuery() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ID, title, description, details, ingredients, " +
+        sb.append("SELECT ID, title, description, picture, details, ingredients, " +
                 "preparation, likes" +
                 "FROM post" +
                 "WHERE user_ID = ?");
@@ -89,7 +91,8 @@ public class PostDAO {
                         resultSet.getString(4),
                         resultSet.getString(5),
                         resultSet.getString(6),
-                        Integer.parseInt(resultSet.getString(7)),
+                        resultSet.getString(7),
+                        Integer.parseInt(resultSet.getString(8)),
                         userBL.getUser(String.valueOf(id)));
                 return post;
             }
@@ -102,5 +105,41 @@ public class PostDAO {
             ConnectionFactory.close(connection);
         }
         return null;
+    }
+
+    private String createSavePostQuery() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO post "+
+                    "(title, description, picture, details, ingredients, preparation, likes, user_ID" +
+                  "VALUES" +
+                  "(?,?,?,?,?,?,?,?)");
+        return sb.toString();
+    }
+
+    public boolean savePost(Post post) {
+        Connection con = null;
+        PreparedStatement insertStatement = null;
+        String query = createSavePostQuery();
+        ResultSet resultSet = null;
+
+        try {
+            con = ConnectionFactory.getConnection();
+            insertStatement= con.prepareStatement(query);
+            insertStatement.setString(1, post.getTitle());
+            insertStatement.setString(2, post.getDescription());
+            insertStatement.setString(3, post.getPicture());
+            insertStatement.setString(4, post.getDetails());
+            insertStatement.setString(5, post.getIngredients());
+            insertStatement.setString(6, post.getPreparation());
+            insertStatement.setInt(7, post.getLikes());
+            insertStatement.setInt(8, post.getUser().getUserID());
+
+
+            insertStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

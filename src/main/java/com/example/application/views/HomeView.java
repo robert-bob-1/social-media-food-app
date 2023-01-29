@@ -6,6 +6,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
@@ -30,6 +31,7 @@ import static com.vaadin.flow.component.button.ButtonVariant.LUMO_TERTIARY_INLIN
 @PageTitle("HomeView")
 public class HomeView extends AppLayout implements Observer, BeforeEnterObserver {
     private String userID;
+    private User user;
     private String userEmail;
     private String userRole;
     private UserBL userBL = new UserBL();
@@ -40,9 +42,19 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
     private final Button exploreButton = new Button("Explore");
     private final Button profileButton = new Button("Profile");
 
+    private Dialog createPostDialog = new Dialog();
+    private Button createPostButton;
+
+    private final VerticalLayout homePage = new VerticalLayout();
+    private final VerticalLayout explorePage = new VerticalLayout();
+    private final VerticalLayout personalPage = new VerticalLayout();
+
+    private VerticalLayout currentPage;
 
     public HomeView() {
         getStyle().set("background-color", "#FCFFE7");
+
+
         setContent(main);
     }
 
@@ -69,11 +81,36 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         main.add(header);
     }
 
+    private void makeCreatePostLayout() {
+        HorizontalLayout createPostLayout = new HorizontalLayout();
+
+        createPostDialog.setHeaderTitle("Insert details to create a new post");
+        createPostDialog.add(new MakePostView(user));
+        createPostButton = new Button("Create a new post", l -> createPostDialog.open());
+
+        Button closecDialog = new Button("Close", l -> createPostDialog.close());
+        createPostDialog.getFooter().add(closecDialog);
+
+        createPostLayout.getStyle().set("background-color", "white");
+        createPostLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        createPostLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        createPostLayout.add(createPostButton);
+
+        main.add(createPostLayout);
+    }
+
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
         userID = beforeEnterEvent.getRouteParameters().get("userID").orElse("nu s-a primit id");
+        user = userBL.getUser(userID);
+
         makeHeader(userID);
+        makeCreatePostLayout();
+
+        currentPage = homePage;
     }
+
 
     @Override
     public void update(Observable o, Object arg) {

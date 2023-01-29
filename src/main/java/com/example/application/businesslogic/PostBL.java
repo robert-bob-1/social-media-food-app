@@ -26,4 +26,9 @@ public class PostBL {
         return postDAO.getPostByUserID(id);
     }
 
+    /**
+     * Save a post to database
+     */
+    public boolean savePost(Post post){ return postDAO.savePost(post);}
+
 }

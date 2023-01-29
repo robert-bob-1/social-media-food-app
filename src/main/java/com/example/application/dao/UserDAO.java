@@ -13,7 +13,7 @@ public class UserDAO {
     private String createUpdateNameQuery() {
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE ");
-        sb.append("eventizer.user");
+        sb.append("user");
         sb.append(" SET ");
         sb.append(" name = ?");
         sb.append(" WHERE userID =?");
@@ -66,9 +66,9 @@ public class UserDAO {
 
     private String createGetUserQuery() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT user.username, user.email, user.phone, user.password, user.role ");
-        sb.append("FROM eventizer.user WHERE ");
-        sb.append("userID = ?;");
+        sb.append("SELECT firstName, lastName, username, password, description " +
+                "FROM user " +
+                "WHERE ID = ?;");
         return sb.toString();
     }
 
@@ -107,17 +107,17 @@ public class UserDAO {
         Connection con = null;
         PreparedStatement selectStatement = null;
         String query = createGetUserQuery();
-        ResultSet rs = null;
+        ResultSet resultSet = null;
 
         try {
             con = ConnectionFactory.getConnection();
             selectStatement = con.prepareStatement(query);
             selectStatement.setString(1, userID);
-            rs = selectStatement.executeQuery();
+            resultSet = selectStatement.executeQuery();
 
-            if (rs.next()) {
-                User u = new User(Integer.parseInt(userID), rs.getString(1), rs.getString(2),
-                        rs.getString(3), rs.getString(4));
+            if (resultSet.next()) {
+                User u = new User(Integer.parseInt(userID), resultSet.getString(1), resultSet.getString(2),
+                        resultSet.getString(3), resultSet.getString(4));
 
                 return u;
             }
