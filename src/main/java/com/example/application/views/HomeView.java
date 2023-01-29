@@ -1,6 +1,8 @@
 package com.example.application.views;
 
+import com.example.application.businesslogic.PostBL;
 import com.example.application.businesslogic.UserBL;
+import com.example.application.model.Post;
 import com.example.application.model.User;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -22,6 +24,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.core.io.ClassPathResource;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -32,9 +35,8 @@ import static com.vaadin.flow.component.button.ButtonVariant.LUMO_TERTIARY_INLIN
 public class HomeView extends AppLayout implements Observer, BeforeEnterObserver {
     private String userID;
     private User user;
-    private String userEmail;
-    private String userRole;
     private UserBL userBL = new UserBL();
+    private PostBL postBL = new PostBL();
 
     private final VerticalLayout main = new VerticalLayout();
 
@@ -53,6 +55,13 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
 
     public HomeView() {
         getStyle().set("background-color", "#FCFFE7");
+        homeButton.addClickListener(e -> {
+            //ArrayList<Integer> followedUsers = userBL.getFollowedUsers(user.getUserID());
+            ArrayList<Post> posts = postBL.getFollowedPosts(user.getUserID());
+            if(posts.size() == 0){
+                posts = postBL.getAllPosts();
+            }
+        });
         setContent(main);
     }
 
@@ -79,6 +88,9 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         main.add(header);
     }
 
+    /**
+     * Create and set the post creating portion of the layout which is always present
+     */
     private void makeCreatePostLayout() {
         HorizontalLayout createPostLayout = new HorizontalLayout();
 
@@ -100,8 +112,13 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, createPostLayout);
     }
 
+    /**
+     * Design and controller class for the primary home page.
+     * This function creates the home page for every user, populating it with POSTS from USERS that CURRENT USER FOLLOWS.
+     * They will be ordered cronologically.
+     */
     private void makeHomePage(){
-
+        homePage
     }
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {

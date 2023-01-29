@@ -38,6 +38,8 @@ public class MakePostView extends VerticalLayout {
 
             if (postBL.savePost(newPost)){
                 notification.setText("Post created succesfully!");
+                //clear all text fields
+                clearText();
             } else{
                 notification.setText("Post couldn't be created!");
             }
@@ -53,4 +55,13 @@ public class MakePostView extends VerticalLayout {
         setAlignItems(Alignment.STRETCH);
         setJustifyContentMode(JustifyContentMode.CENTER);
     }
+    private void clearText(){
+        title.clear();
+        description.clear();
+        picture.clear();
+        details.clear();
+        ingredients.clear();
+        preparation.clear();
+    }
+
 }

@@ -23,6 +23,14 @@ public class UserBL {
         return user.getUsername(id);
     }
 
+    public ArrayList<Integer> getFollowedUsers(int userID) {
+        return user.getFollowedUsers(userID);
+    }
+
+    public boolean getFollowStatus(User followedUser, User follower) {
+        return user.getFollowStatus(followedUser.getUserID(), follower.getUserID());
+    }
+
 //    public boolean updatePassword(int id,String password) throws SQLException {
 //        return user.updatePassword(id,password);
 //    }

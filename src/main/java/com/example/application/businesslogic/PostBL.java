@@ -1,10 +1,14 @@
 package com.example.application.businesslogic;
 
 import com.example.application.dao.PostDAO;
+import com.example.application.dao.UserDAO;
 import com.example.application.model.Post;
+
+import java.util.ArrayList;
 
 public class PostBL {
     private PostDAO postDAO = new PostDAO();
+    private UserDAO userDAO = new UserDAO();
 
     public PostBL(){}
 
@@ -31,4 +35,16 @@ public class PostBL {
      */
     public boolean savePost(Post post){ return postDAO.savePost(post);}
 
+    /**
+     * Fetch a user's followed users, fetch all posts from those users, order by date, return id's.
+     * @param userID
+     * @return
+     */
+    public ArrayList<Post> getFollowedPosts(int userID) {
+        return postDAO.getFollowedPosts(userID);
+    }
+
+    public ArrayList<Integer> getAllPosts() {
+
+    }
 }
