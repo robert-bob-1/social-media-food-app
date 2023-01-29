@@ -10,18 +10,18 @@ public class LoginDAO {
     private String createSelectQuery(){
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT " +
-                    "user.username, user.password " +
-                  "FROM social_media.users " +
-                  "WHERE users.username = ? AND user.password = ?");
+                    "ID " +
+                  "FROM social_media.user " +
+                  "WHERE user.username = ? AND user.password = ?");
         return sb.toString();
     }
 
     private String createSelectIDQuery(){
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT " +
-                    "userID " +
-                  "FROM social_media.users " +
-                  "WHERE email = ?;");
+                    "ID " +
+                  "FROM social_media.user " +
+                  "WHERE username = ?");
         return sb.toString();
     }
 
@@ -35,11 +35,12 @@ public class LoginDAO {
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             statement.setString(2, password);
+
             resultSet = statement.executeQuery();
 
-            if (resultSet.next())
+            if (resultSet.next()){
                 return true;
-
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,7 +57,7 @@ public class LoginDAO {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        String query = createSelectQuery();
+        String query = createSelectIDQuery();
         try {
             connection = (Connection) ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);

@@ -14,7 +14,7 @@ public class ConnectionFactory {
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionFactory.class.getName());
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String URL = "jdbc:mysql://localhost/social_media";
+    private static final String URL = "jdbc:mysql://localhost:3306/social_media";
     private static final String USER = "root";
     private static final String PASS = "root";
 

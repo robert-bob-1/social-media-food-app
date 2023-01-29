@@ -10,7 +10,7 @@ public class RegisterDAO {
     private String createInsertStatement() {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO " +
-                    "socal_media.users (firstName, lastName, username, password) " +
+                    "user (firstName, lastName, username, password) " +
                   "VALUES (?, ?, ?, ?);");
         return sb.toString();
     }

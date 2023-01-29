@@ -1,11 +1,14 @@
 package com.example.application.views;
+import com.example.application.businesslogic.RegisterBL;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -27,7 +30,8 @@ public class RegistrationForm extends VerticalLayout {
     private Span errorMessageField;
 
     private Button submitButton;
-
+    Notification notificationBox = new Notification();
+    Dialog dialogBox = new Dialog();
 
     public RegistrationForm() {
         getStyle().set("background-color", "#2B3467");
@@ -47,16 +51,42 @@ public class RegistrationForm extends VerticalLayout {
 
         errorMessageField = new Span();
 
+        notificationBox.setPosition(Notification.Position.TOP_CENTER);
+        notificationBox.setDuration(2000);
+
+        dialogBox.setHeaderTitle("Registration successful!");
+
         submitButton = new Button("Join the community");
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         submitButton.getStyle().set("padding", "20px 161px");
+        submitButton.addClickListener(e -> {
+            if (firstName.getValue().equals("") || lastName.getValue().equals("")
+                    || username.getValue().equals("")
+                    || password.getValue().equals("")
+                    || passwordConfirm.getValue().equals("")) {
+                notificationBox.setText("Please complete all fields!");
+                notificationBox.open();
 
+            } else if ( !password.getValue().equals(passwordConfirm.getValue())){
+                notificationBox.setText("Passwords don't match!");
+                notificationBox.open();
+            }
+            else {
+                RegisterBL reg = new RegisterBL();
+                if (reg.insertUser(firstName.getValue(), lastName.getValue(), username.getValue(), password.getValue())){
+                    notificationBox.setText("Welcome, " + firstName.getValue() + " " + lastName.getValue());
+                    notificationBox.open();
+                }
+            }
+        });
         add(title, firstName, lastName, username, password,
                 passwordConfirm, errorMessageField,
                 submitButton);
 
         // Max width of the Form
         setMaxWidth("500px");
+
+
 
         // Allow the form layout to be responsive.
         // On device widths 0-490px we have one column.
