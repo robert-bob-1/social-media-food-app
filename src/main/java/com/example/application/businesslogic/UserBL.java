@@ -1,6 +1,7 @@
 package com.example.application.businesslogic;
 
 import com.example.application.dao.UserDAO;
+import com.example.application.model.User;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,6 +14,15 @@ public class UserBL {
         user = new UserDAO();
     }
 
+    public User getUser(String userID) {
+        return user.getUser(userID);
+    }
+
+
+    public String getUsername(String id) {
+        return user.getUsername(id);
+    }
+
 //    public boolean updatePassword(int id,String password) throws SQLException {
 //        return user.updatePassword(id,password);
 //    }
@@ -21,11 +31,7 @@ public class UserBL {
 //        return user.updateName(id,name);
 //    }
 //
-
-    public String getUsername(String id) {
-        return user.getUsername(id);
-    }
-//
+    //
 //    public String getRole(int id) {
 //        return user.getRole(id);
 //    }
@@ -38,9 +44,7 @@ public class UserBL {
 //        return userLogic;
 //    }
 //
-//    public User getUser(String userID) {
-//        return user.getUser(userID);
-//    }
+
 //
 //    public void modifyUser(User u) {
 //        user.modifyUser(u);

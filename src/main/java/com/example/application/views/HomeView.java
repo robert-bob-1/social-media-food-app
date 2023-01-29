@@ -51,7 +51,8 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         H3 hello = new H3("Welcome, chef " + userBL.getUsername(userid) + "!");
         hello.getStyle().set("font-family", "Georgia, serif");
         hello.getStyle().set("font-size", "18px");
-
+        hello.getStyle().set("padding", "100px, 130px");
+        hello.getStyle().set("border-radius", "0px");
 //        Image homeImage = new Image("src/images/homeButton.png", "home image");
 //        homeImage.setWidth("100px");
 
@@ -63,7 +64,7 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         header.setSizeFull();
         header.getStyle().set("background-color", "white");
         header.setAlignItems(FlexComponent.Alignment.CENTER);
-//        header.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
+        header.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         main.add(header);
     }
