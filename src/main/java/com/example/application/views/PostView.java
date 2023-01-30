@@ -3,9 +3,12 @@ package com.example.application.views;
 import com.example.application.businesslogic.PostBL;
 import com.example.application.businesslogic.UserBL;
 import com.example.application.model.Post;
+import com.example.application.model.User;
+import com.example.application.views.components.FollowButton;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
@@ -15,12 +18,13 @@ public class PostView extends VerticalLayout {
     UserBL userBL = new UserBL();
     int postID;
     Post post;
+    User currentUser;
 
     //view components
     //username with maybe a follow button
     HorizontalLayout header = new HorizontalLayout();
     Label username = new Label("");
-    Button followButton = new Button("Follow");
+    FollowButton followButton;
 
     //post components
     VerticalLayout content = new VerticalLayout();
@@ -33,24 +37,32 @@ public class PostView extends VerticalLayout {
     Button likes = new Button("Likes: 0");
 
 
-    public PostView(Post post){
+    public PostView(Post post, User currentUser){
         this.post = post;
+        this.currentUser = currentUser;
 
-        makeHeader(post);
+
+        makeHeader();
+        add(header);
+
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         this.setWidth("600px");
-
     }
 
-    private void makeHeader(Post post) {
+    private void makeHeader() {
         header.setWidth("500px");
 
         username.setText(this.post.getUser().getUsername());
+        username.getStyle().set("padding", "0px 20px");
 
+        followButton = new FollowButton(this.post.getUser(), this.currentUser);
+
+        header.add(username, followButton);
         header.getStyle().set("background-color", "white");
-        header.getStyle().set("border", "2px black");
+        header.getStyle().set("border", "3px black");
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
 
 
     }

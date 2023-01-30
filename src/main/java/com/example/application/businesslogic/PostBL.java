@@ -44,7 +44,7 @@ public class PostBL {
         return postDAO.getFollowedPosts(userID);
     }
 
-    public ArrayList<Integer> getAllPosts() {
-
+    public ArrayList<Post> getAllPosts() {
+        return postDAO.getAllPosts();
     }
 }

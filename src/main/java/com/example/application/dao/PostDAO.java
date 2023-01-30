@@ -148,11 +148,11 @@ public class PostDAO {
 
     private String createSelectFollowedPostsQuery() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT *" +
-                "FROM post" +
-                "WHERE user_ID in (SELECT followed_id" +
-                                   "FROM follow" +
-                                    "WHERE follower_id = (?))" +
+        sb.append("SELECT * " +
+                "FROM post " +
+                "WHERE user_ID in (SELECT followed_id " +
+                                   "FROM follow " +
+                                    "WHERE follower_id = (?)) " +
                 "ORDER BY datetime DESC");
         return sb.toString();
     }
@@ -160,16 +160,16 @@ public class PostDAO {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        String query = createSelectByUserIDQuery();
+        String query = createSelectFollowedPostsQuery();
 
         try {
             connection = (Connection) ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
             statement.setInt(1, userID);
             resultSet = statement.executeQuery();
-            resultSet.next();
 
-            if (resultSet.next()){
+            ArrayList<Post> postList = new ArrayList<>();
+            while (resultSet.next()){
                 Post post = new Post(
                         Integer.parseInt(resultSet.getString(1)),
                         resultSet.getString(2),
@@ -180,9 +180,50 @@ public class PostDAO {
                         resultSet.getString(7),
                         Integer.parseInt(resultSet.getString(8)),
                         resultSet.getString(9),
-                        userBL.getUser(String.valueOf(id)));
-                return post;
+                        userBL.getUser(resultSet.getString(10)));
+                postList.add(post);
             }
+            return postList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+        return null;
+    }
+
+    public ArrayList<Post> getAllPosts() {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query = new String (
+                "SELECT * " +
+                "FROM post");
+
+        try {
+            connection = (Connection) ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
+
+            ArrayList<Post> postList = new ArrayList<>();
+            while (resultSet.next()){
+                Post post = new Post(
+                        Integer.parseInt(resultSet.getString(1)),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        Integer.parseInt(resultSet.getString(8)),
+                        resultSet.getString(9),
+                        userBL.getUser(resultSet.getString(10)));
+                postList.add(post);
+            }
+            return postList;
 
         } catch (Exception e) {
             e.printStackTrace();

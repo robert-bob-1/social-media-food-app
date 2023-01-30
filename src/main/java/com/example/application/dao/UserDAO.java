@@ -141,6 +141,33 @@ public class UserDAO {
         return false;
     }
 
+    public boolean unfollow(int followedID, int followerID) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query = new String(
+                "SELECT followed_ID " +
+                        "FROM follow " +
+                        "WHERE follower_ID = ? AND followed_ID = ?;");
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, String.valueOf(followerID));
+            statement.setString(2, String.valueOf(followedID));
+            resultSet = statement.executeQuery();
+
+            return resultSet.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+        return false;
+    }
+
 //    public boolean participate(User u, Event e) {
 //        Connection con = null;
 //        PreparedStatement stmt = null;

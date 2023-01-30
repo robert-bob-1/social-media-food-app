@@ -55,13 +55,15 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
 
     public HomeView() {
         getStyle().set("background-color", "#FCFFE7");
+
         homeButton.addClickListener(e -> {
-            //ArrayList<Integer> followedUsers = userBL.getFollowedUsers(user.getUserID());
-            ArrayList<Post> posts = postBL.getFollowedPosts(user.getUserID());
-            if(posts.size() == 0){
-                posts = postBL.getAllPosts();
-            }
+            makeHomePage();
         });
+        homePage.setAlignItems(FlexComponent.Alignment.CENTER);
+        homePage.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+
+        main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, homePage, explorePage, personalPage);
+
         setContent(main);
     }
 
@@ -118,7 +120,16 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
      * They will be ordered cronologically.
      */
     private void makeHomePage(){
-        homePage
+        ArrayList<Post> posts = postBL.getFollowedPosts(user.getUserID());
+        if(posts == null || posts.size() == 0){
+            posts = postBL.getAllPosts();
+        }
+
+        homePage.removeAll();
+        for(Post post : posts){
+            homePage.add(new PostView(post, user));
+        }
+        currentPage = homePage;
     }
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
@@ -127,8 +138,11 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
 
         makeHeader(userID);
         makeCreatePostLayout();
+        makeHomePage();
 
         currentPage = homePage;
+        main.add(currentPage);
+
     }
 
 

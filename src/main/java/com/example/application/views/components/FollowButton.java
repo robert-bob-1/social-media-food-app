@@ -5,9 +5,9 @@ import com.example.application.model.User;
 import com.vaadin.flow.component.button.Button;
 
 public class FollowButton extends Button {
-    private User user;
+    private User followedUser, follower;
     private boolean isFollowed;
-    private UserBL userBL;
+    private final UserBL userBL = new UserBL();
 
     public FollowButton (User followedUser, User follower){
         getStyle().set("font-size", "12px");
@@ -15,9 +15,14 @@ public class FollowButton extends Button {
         getStyle().set("border", "2px ");
 
         isFollowed = userBL.getFollowStatus(followedUser, follower);
+        updateStyle();
         addClickListener( e -> {
             isFollowed = userBL.getFollowStatus(followedUser, follower);
-           //finish up button and post interface
+            //unfollow if is followed
+            if (isFollowed){
+                userBL.unfollow(followedUser, follower);
+            }
+            updateStyle();
         });
     }
     public void updateStyle(){
