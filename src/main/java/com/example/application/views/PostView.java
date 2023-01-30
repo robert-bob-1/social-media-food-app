@@ -7,6 +7,7 @@ import com.example.application.model.User;
 import com.example.application.views.components.EditPostDialog;
 import com.example.application.views.components.FollowButton;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
@@ -22,12 +23,13 @@ public class PostView extends VerticalLayout {
     Post post;
     User currentUser;
 
-    //view components
-    //username with maybe a follow button
+    //header components
     HorizontalLayout header = new HorizontalLayout();
+    Image userImage;
     Label username = new Label("");
     FollowButton followButton;
     Button editPostButton = new Button();
+    Dialog profileDialog = new Dialog();
 
     //post components
     VerticalLayout content = new VerticalLayout();
@@ -46,13 +48,11 @@ public class PostView extends VerticalLayout {
         this.post = post;
         this.currentUser = currentUser;
 
-
         makeHeader();
         add(header);
 
         makeContent();
         add(content);
-
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
@@ -63,11 +63,15 @@ public class PostView extends VerticalLayout {
     private void makeHeader() {
         header.setWidth("500px");
 
+        userImage = new Image(post.getUser().getImage(), "user's profile picture");
+        userImage.setMaxWidth("40px");
+        userImage.getStyle().set("padding", "10px 10px");
+
         username.setText(this.post.getUser().getFirstName() + " " + this.post.getUser().getLastName());
-        username.getStyle().set("padding", "0px 20px");
+        username.getStyle().set("padding", "0px 0px");
 
         followButton = new FollowButton(this.post.getUser(), this.currentUser);
-        header.add(username, followButton);
+        header.add(userImage, username, followButton);
 
         if (currentUser.getUserID() == post.getUser().getUserID()){
             editPostButton.setIcon(new Icon("lumo", "edit"));
@@ -79,6 +83,10 @@ public class PostView extends VerticalLayout {
                 editPostDialog.open();
             });
         }
+
+        header.addClickListener( e -> {
+
+        })
 
         header.getStyle().set("background-color", "white");
         header.getStyle().set("border", "2px outset #CFCAC9"); //#2B3467

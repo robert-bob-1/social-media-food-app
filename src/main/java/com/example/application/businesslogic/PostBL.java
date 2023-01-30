@@ -27,8 +27,8 @@ public class PostBL {
      * @param id
      * @return
      */
-    public Post getPostByUserID(int id){
-        return postDAO.getPostByUserID(id);
+    public ArrayList<Post> getPostsByUserID(int id){
+        return postDAO.getPostsByUserID(id);
     }
 
     /**

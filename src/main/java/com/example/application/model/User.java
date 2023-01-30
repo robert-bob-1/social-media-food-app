@@ -7,10 +7,10 @@ public class User {
     private String username;
     private String password;
 
-    private String description;
+    private String description = "No description set yet.";
+    private String image = "https://play-lh.googleusercontent.com/DSA2hFJx9INOxXgMvd6TstVxe4UZKqHjMsGVRLNNXDsH-VkOodHfZ1hLtczp3udTvYU";
 
     public User() {
-
     }
 
     public User(int userID, String firstName, String lastName, String username, String password) {
@@ -19,6 +19,14 @@ public class User {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+    public User(int userID, String firstName, String lastName, String username, String password, String image) {
+        this.userID = userID;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.image = image;
     }
 
     public int getUserID() {
@@ -69,5 +77,12 @@ public class User {
         this.description = description;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
 }

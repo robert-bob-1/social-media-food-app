@@ -13,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import java.util.stream.Stream;
 
@@ -27,6 +28,9 @@ public class RegistrationForm extends VerticalLayout {
     private PasswordField password;
     private PasswordField passwordConfirm;
 
+    private TextArea description;
+    private TextField image;
+
     private Span errorMessageField;
 
     private Button submitButton;
@@ -34,7 +38,7 @@ public class RegistrationForm extends VerticalLayout {
     Dialog dialogBox = new Dialog();
 
     public RegistrationForm() {
-        getStyle().set("background-color", "#2B3467");
+        getStyle().set("background-color", "white");
         title = new H3("Sign-up form");
         title.getStyle().set("padding", "5px 160px");
         firstName = new TextField("First name");
@@ -47,6 +51,10 @@ public class RegistrationForm extends VerticalLayout {
         password.getStyle().set("padding", "5px 130px");
         passwordConfirm = new PasswordField("Confirm password");
         passwordConfirm.getStyle().set("padding", "5px 130px");
+        description = new TextArea("Insert a description (optional)");
+        description.getStyle().set("padding", "5px 130px");
+        image = new TextField("Insert link to profile picture (optional)");
+        image.getStyle().set("padding", "5px 130px");
         setRequiredIndicatorVisible(firstName, lastName, username, password, passwordConfirm);
 
         errorMessageField = new Span();
@@ -73,10 +81,11 @@ public class RegistrationForm extends VerticalLayout {
             }
             else {
                 RegisterBL reg = new RegisterBL();
-                if (reg.insertUser(firstName.getValue(), lastName.getValue(), username.getValue(), password.getValue())){
+                if (reg.insertUser(firstName.getValue(), lastName.getValue(), username.getValue(), password.getValue(), description.getValue(), image.getValue())){
                     notificationBox.setText("Welcome, " + firstName.getValue() + " " + lastName.getValue());
                     notificationBox.open();
                 }
+
             }
         });
         add(title, firstName, lastName, username, password,

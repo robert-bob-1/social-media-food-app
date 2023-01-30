@@ -2,7 +2,6 @@ package com.example.application.dao;
 
 import com.example.application.connection.ConnectionFactory;
 import com.example.application.model.User;
-import org.apache.commons.compress.archivers.ar.ArArchiveEntry;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -191,5 +190,85 @@ public class UserDAO {
             ConnectionFactory.close(connection);
         }
         return false;
+    }
+
+    public boolean editUser(User u) {
+        Connection con = null;
+        PreparedStatement insertStatement = null;
+        String query =
+                "UPDATE user " +
+                "SET firstName = ?, lastName = ?, username = ?, password = ?," +
+                "description = ?, image = ? " +
+                "WHERE ID = ? ";
+        ResultSet resultSet = null;
+
+        try {
+            con = ConnectionFactory.getConnection();
+            insertStatement= con.prepareStatement(query);
+            insertStatement.setString(1, u.getFirstName());
+            insertStatement.setString(2, u.getLastName());
+            insertStatement.setString(3, u.getUsername());
+            insertStatement.setString(4, u.getPassword());
+            insertStatement.setString(5, u.getDescription());
+            insertStatement.setString(6, u.getImage());
+            insertStatement.setString(7, String.valueOf(u.getUserID()));
+            insertStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void removeUser(int u) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String queryPre1 =
+                "DELETE FROM comment " +
+                "WHERE user_id = ?";
+        String queryPre2 =
+                "DELETE FROM follow " +
+                "WHERE followed_ID = ? OR follower_ID = ?";
+        String queryPre3 =
+                "DELETE FROM liked_posts " +
+                "WHERE user_id = ? ";
+        String queryPre4 =
+                "DELETE FROM post " +
+                "WHERE user_id = ? ";
+        String query =
+                "DELETE FROM user " +
+                "WHERE ID = ?";
+
+
+        try {
+            connection = (Connection) ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(queryPre1);
+            statement.setInt(1, u);
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement(queryPre2);
+            statement.setInt(1, u);
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement(queryPre3);
+            statement.setInt(1, u);
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement(queryPre4);
+            statement.setInt(1, u);
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, u);
+            statement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
     }
 }

@@ -62,29 +62,25 @@ public class PostDAO {
         return null;
     }
 
-    private String createSelectByUserIDQuery() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ID, title, description, picture, details, ingredients, " +
-                "preparation, likes, datetime" +
-                "FROM post" +
-                "WHERE user_ID = ?");
-        return sb.toString();
-    }
 
-    public Post getPostByUserID(int id) {
+    public ArrayList<Post> getPostsByUserID(int id) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-        String query = createSelectByUserIDQuery();
+        String query =
+                "SELECT ID, title, description, picture, details, ingredients, " +
+                "preparation, likes, datetime " +
+                "FROM post " +
+                "WHERE user_ID = ?";
 
         try {
             connection = (Connection) ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
-            resultSet.next();
 
-            if (resultSet.next()){
+            ArrayList<Post> posts = new ArrayList<>();
+            while (resultSet.next()){
                 Post post = new Post(
                         Integer.parseInt(resultSet.getString(1)),
                         resultSet.getString(2),
@@ -96,8 +92,9 @@ public class PostDAO {
                         Integer.parseInt(resultSet.getString(8)),
                         resultSet.getString(9),
                         userBL.getUser(String.valueOf(id)));
-                return post;
+                posts.add(post);
             }
+            return posts;
 
         } catch (Exception e) {
             e.printStackTrace();

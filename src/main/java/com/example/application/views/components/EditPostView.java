@@ -46,7 +46,7 @@ public class EditPostView extends VerticalLayout {
             if (postBL.editPost(post)){
                 notification.setText("Post edited succesfully!");
                 //clear all text fields
-                clearText();
+                //clearText();
             } else{
                 notification.setText("Post couldn't be edited!");
             }

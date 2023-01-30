@@ -4,6 +4,7 @@ import com.example.application.businesslogic.PostBL;
 import com.example.application.businesslogic.UserBL;
 import com.example.application.model.Post;
 import com.example.application.model.User;
+import com.example.application.views.pages.ProfileView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
@@ -35,6 +36,7 @@ import static com.vaadin.flow.component.button.ButtonVariant.LUMO_TERTIARY_INLIN
 public class HomeView extends AppLayout implements Observer, BeforeEnterObserver {
     private String userID;
     private User user;
+
     private UserBL userBL = new UserBL();
     private PostBL postBL = new PostBL();
 
@@ -47,9 +49,9 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
     private Dialog createPostDialog = new Dialog();
     private Button createPostButton;
 
-    private final VerticalLayout homePage = new VerticalLayout();
-    private final VerticalLayout explorePage = new VerticalLayout();
-    private final VerticalLayout personalPage = new VerticalLayout();
+    private VerticalLayout homePage = new VerticalLayout();
+    private VerticalLayout explorePage = new VerticalLayout();
+    private VerticalLayout profilePage = new VerticalLayout();
 
     private VerticalLayout currentPage;
 
@@ -58,6 +60,8 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
 
         homeButton.addClickListener(e -> {
             makeHomePage();
+            main.remove(profilePage);
+            main.add(homePage);
         });
         homePage.setAlignItems(FlexComponent.Alignment.CENTER);
         homePage.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -67,9 +71,13 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         });
 
         profileButton.addClickListener( e -> {
-            makeProfilePage();
+            profilePage = new ProfileView(user, user);
+//            currentPage = profilePage;
+            main.remove(homePage);
+            main.add(profilePage);
         });
-        main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, homePage, explorePage, personalPage);
+
+        main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, homePage, explorePage, profilePage);
 
         setContent(main);
     }
@@ -145,7 +153,6 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         for(Post post : posts){
             homePage.add(new PostView(post, user));
         }
-        currentPage = homePage;
     }
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
@@ -156,9 +163,7 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         makeCreatePostLayout();
         makeHomePage();
 
-        currentPage = homePage;
-        main.add(currentPage);
-
+        main.add(homePage);
     }
 
 
