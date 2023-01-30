@@ -153,7 +153,7 @@ public class PostDAO {
                 "WHERE user_ID in (SELECT followed_id " +
                                    "FROM follow " +
                                     "WHERE follower_id = (?)) " +
-                "ORDER BY datetime DESC");
+                "ORDER BY datetime ASC");
         return sb.toString();
     }
     public ArrayList<Post> getFollowedPosts(int userID) {
@@ -233,5 +233,85 @@ public class PostDAO {
             ConnectionFactory.close(connection);
         }
         return null;
+    }
+
+    public void saveLikes(int id, int likes) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query = new String (
+                "UPDATE post " +
+                "SET likes = ? " +
+                "WHERE ID = ?");
+
+        try {
+            connection = (Connection) ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, likes);
+            statement.setInt(2, id);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+    }
+
+    public boolean getLikeStatus(int userID, int postID) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query = new String (
+                "SELECT * " +
+                "FROM liked_posts " +
+                "WHERE user_id = ? AND post_id = ?");
+
+        try {
+            connection = (Connection) ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, userID);
+            statement.setInt(2, postID);
+            resultSet = statement.executeQuery();
+
+            return resultSet.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+        return false;
+    }
+
+    public void setLikeStatus(int userID, int postID, int setLike) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query;
+        if (setLike == 0){
+            query = "DELETE FROM liked_posts " +
+                    "WHERE post_ID = ? AND user_ID = ?";
+        } else {
+            query = "INSERT INTO liked_posts (post_ID, user_ID) " +
+                    "VALUES (?, ?) ";
+        }
+
+        try {
+            connection = (Connection) ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, postID);
+            statement.setInt(2, userID);
+            statement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
     }
 }

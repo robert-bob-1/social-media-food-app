@@ -16,7 +16,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class PostView extends VerticalLayout {
     PostBL postBL = new PostBL();
     UserBL userBL = new UserBL();
-    int postID;
+
     Post post;
     User currentUser;
 
@@ -25,6 +25,7 @@ public class PostView extends VerticalLayout {
     HorizontalLayout header = new HorizontalLayout();
     Label username = new Label("");
     FollowButton followButton;
+    Button editPostButton;
 
     //post components
     VerticalLayout content = new VerticalLayout();
@@ -36,6 +37,8 @@ public class PostView extends VerticalLayout {
     Label preparation  = new Label("");
     Button likes = new Button("Likes: 0");
 
+    //edit components
+
 
     public PostView(Post post, User currentUser){
         this.post = post;
@@ -45,25 +48,86 @@ public class PostView extends VerticalLayout {
         makeHeader();
         add(header);
 
+        makeContent();
+        add(content);
+
+
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
         this.setWidth("600px");
     }
 
+
     private void makeHeader() {
         header.setWidth("500px");
 
-        username.setText(this.post.getUser().getUsername());
+        username.setText(this.post.getUser().getFirstName() + " " + this.post.getUser().getLastName());
         username.getStyle().set("padding", "0px 20px");
 
         followButton = new FollowButton(this.post.getUser(), this.currentUser);
 
+//        if (currentUser.getUserID() == post.getUser().getUserID()){
+//            editPostButton.addClickListener( e -> {
+//
+//            });
+//        }
+
         header.add(username, followButton);
         header.getStyle().set("background-color", "white");
-        header.getStyle().set("border", "3px black");
+        header.getStyle().set("border", "2px outset #CFCAC9"); //#2B3467
+        header.getStyle().set("border-radius", "7px");
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+    }
 
+    private void makeContent() {
+        title.setText(post.getTitle());
 
+        description.setText(post.getDescription());
+
+        image = new Image(post.getPicture(), "post image");
+        image.setMaxWidth("400px");
+        details.setText(post.getDetails());
+
+        ingredients.setText(post.getIngredients());
+
+        preparation.setText(post.getPreparation());
+
+        likes.setText("👍 " + post.getLikes());
+        boolean liked = postBL.getLikeStatus(currentUser, post);
+        if (!liked){
+            likes.getStyle().set("background-color", "#2B3467");
+            likes.getStyle().set("color", "white");
+        } else {
+            likes.getStyle().set("background-color", "#F8F5F5");
+            likes.getStyle().set("color", "#2B3467");
+        }
+
+        likes.addClickListener( e -> {
+            boolean alreadyLiked = postBL.getLikeStatus(currentUser, post);
+
+            if (alreadyLiked){
+                post.setLikes(post.getLikes() - 1);
+                postBL.saveLikes(post, currentUser, alreadyLiked);
+
+                likes.getStyle().set("background-color", "#2B3467");
+                likes.getStyle().set("color", "white");
+            } else {
+                post.setLikes(post.getLikes() + 1);
+                postBL.saveLikes(post, currentUser, alreadyLiked);
+
+                likes.getStyle().set("background-color", "#F8F5F5");
+                likes.getStyle().set("color", "#2B3467");
+            }
+
+            likes.setText("👍 " + post.getLikes());
+        });
+
+        content.add(title, description, image, details, ingredients, preparation, likes);
+        content.getStyle().set("padding", "30px, 0px");
+        content.getStyle().set("background-color", "white");
+        content.getStyle().set("border", "2px outset #CFCAC9"); //#2B3467
+        content.getStyle().set("border-radius", "7px");
+        //content.setDefaultHorizontalComponentAlignment();
     }
 }

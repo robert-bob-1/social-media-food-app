@@ -35,6 +35,10 @@ public class UserBL {
         return user.unfollow(followedUser.getUserID(), follower.getUserID());
     }
 
+    public boolean follow(User followedUser, User follower) {
+        return user.follow(followedUser.getUserID(), follower.getUserID());
+    }
+
 //    public boolean updatePassword(int id,String password) throws SQLException {
 //        return user.updatePassword(id,password);
 //    }

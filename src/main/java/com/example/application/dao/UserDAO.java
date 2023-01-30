@@ -146,18 +146,17 @@ public class UserDAO {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         String query = new String(
-                "SELECT followed_ID " +
-                        "FROM follow " +
-                        "WHERE follower_ID = ? AND followed_ID = ?;");
+                "DELETE FROM follow " +
+                "WHERE followed_ID = ? AND follower_ID = ?");
 
         try {
             connection = ConnectionFactory.getConnection();
             statement = connection.prepareStatement(query);
-            statement.setString(1, String.valueOf(followerID));
-            statement.setString(2, String.valueOf(followedID));
-            resultSet = statement.executeQuery();
+            statement.setString(1, String.valueOf(followedID));
+            statement.setString(2, String.valueOf(followerID));
+            statement.executeUpdate();
 
-            return resultSet.next();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -168,135 +167,29 @@ public class UserDAO {
         return false;
     }
 
-//    public boolean participate(User u, Event e) {
-//        Connection con = null;
-//        PreparedStatement stmt = null;
-//        String query = createParticipateQuery();
-//
-//        try {
-//            con = ConnectionFactory.getConnection();
-//            stmt = con.prepareStatement(query);
-//            stmt.setInt(1, u.getUserID());
-//            stmt.setInt(2, e.getEventID());
-//            stmt.setString(3, "");
-//            stmt.executeUpdate();
-//            return true;
-//
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            ConnectionFactory.close(stmt);
-//            ConnectionFactory.close(con);
-//        }
-//
-//        return false;
-//    }
-//
-//    private String createParticipateQuery() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("INSERT INTO eventizer.eventparticipation (userID, eventID, feedback) VALUES ");
-//        sb.append("(?, ?, ?);");
-//        return sb.toString();
-//    }
-//
-//
-//    private String createFeedbackQuery() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("UPDATE eventizer.eventparticipation ");
-//        sb.append("SET feedback = ? ");
-//        sb.append("WHERE userID = ? and eventID = ?;");
-//        return sb.toString();
-//    }
-//
-//    public boolean feedback(User u, Event e, String feed) {
-//        Connection con = null;
-//        PreparedStatement stmt = null;
-//        String query = createFeedbackQuery();
-//
-//        try {
-//            con = ConnectionFactory.getConnection();
-//            stmt = con.prepareStatement(query);
-//            stmt.setString(1, feed);
-//            stmt.setInt(2, u.getUserID());
-//            stmt.setInt(3, e.getEventID());
-//            stmt.executeUpdate();
-//            return true;
-//
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            ConnectionFactory.close(stmt);
-//            ConnectionFactory.close(con);
-//        }
-//
-//        return false;
-//    }
-//
-//    private String createGetFeedbackQuery() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("SELECT feedback FROM eventizer.eventparticipation ");
-//        sb.append("WHERE eventID = ? and userID = ?;");
-//        return sb.toString();
-//    }
-//
-//    public String getFeedback(User u, Event e) {
-//        Connection con = null;
-//        PreparedStatement stmt = null;
-//        ResultSet rs = null;
-//        String query = createGetFeedbackQuery();
-//
-//        try {
-//            con = ConnectionFactory.getConnection();
-//            stmt = con.prepareStatement(query);
-//            stmt.setInt(1, e.getEventID());
-//            stmt.setInt(2, u.getUserID());
-//            rs = stmt.executeQuery();
-//
-//            if (rs.next())
-//                return rs.getString(1);
-//
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            ConnectionFactory.close(stmt);
-//            ConnectionFactory.close(rs);
-//            ConnectionFactory.close(con);
-//        }
-//
-//
-//        return "";
-//    }
-//
-//    private String createGetEventsQuery() {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append("SELECT eventID from eventizer.eventparticipation ");
-//        sb.append("WHERE userID = ?;");
-//        return sb.toString();
-//    }
-//
-//    public ArrayList<Integer> getEvents(String userID) {
-//        Connection connection = null;
-//        PreparedStatement statement = null;
-//        ResultSet resultSet = null;
-//        String query = createGetEventsQuery();
-//        ArrayList<Integer> ev = new ArrayList<>();
-//
-//        try {
-//            connection = (Connection) ConnectionFactory.getConnection();
-//            statement = connection.prepareStatement(query);
-//            statement.setString(1, userID);
-//            resultSet = statement.executeQuery();
-//            while (resultSet.next()) {
-//                ev.add(resultSet.getInt(1));
-//            }
-//            return ev;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            ConnectionFactory.close(resultSet);
-//            ConnectionFactory.close(statement);
-//            ConnectionFactory.close(connection);
-//        }
-//        return null;
-//    }
+    public boolean follow(int followedID, int followerID) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query = new String(
+                "INSERT INTO follow (followed_ID, follower_ID)" +
+                "VALUES (?,?)");
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, String.valueOf(followedID));
+            statement.setString(2, String.valueOf(followerID));
+            int result = statement.executeUpdate();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+        return false;
+    }
 }

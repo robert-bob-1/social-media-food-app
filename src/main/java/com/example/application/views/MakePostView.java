@@ -50,10 +50,10 @@ public class MakePostView extends VerticalLayout {
         add(title, description, picture, details, ingredients, preparation, makePostButton);
 
         setWidth("600px");
-        setHeight("700px");
+        //setHeight("700px");
 
         setAlignItems(Alignment.STRETCH);
-        setJustifyContentMode(JustifyContentMode.CENTER);
+        setJustifyContentMode(JustifyContentMode.AROUND);
     }
     private void clearText(){
         title.clear();

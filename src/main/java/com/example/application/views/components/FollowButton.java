@@ -14,22 +14,32 @@ public class FollowButton extends Button {
         getStyle().set("padding", "20px");
         getStyle().set("border", "2px ");
 
-        isFollowed = userBL.getFollowStatus(followedUser, follower);
-        updateStyle();
+        if (followedUser.getUserID() == follower.getUserID()){
+            this.setVisible(false);
+        } else {
+            isFollowed = userBL.getFollowStatus(followedUser, follower);
+            updateStyle();
+        }
         addClickListener( e -> {
             isFollowed = userBL.getFollowStatus(followedUser, follower);
             //unfollow if is followed
             if (isFollowed){
                 userBL.unfollow(followedUser, follower);
+
+            } else {
+                userBL.follow(followedUser, follower);
             }
+            isFollowed = !isFollowed;
             updateStyle();
         });
     }
     public void updateStyle(){
         if(isFollowed){
-            getStyle().set("background-color", "white");
+            setText("Unfollow😁");
+            getStyle().set("background-color", "#F8F5F5");
             getStyle().set("color", "blue");
         } else{
+            setText("Follow");
             getStyle().set("background-color", "red");
             getStyle().set("color", "white");
         }

@@ -62,9 +62,20 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         homePage.setAlignItems(FlexComponent.Alignment.CENTER);
         homePage.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
+        exploreButton.addClickListener( e -> {
+
+        });
+
+        profileButton.addClickListener( e -> {
+            makeProfilePage();
+        });
         main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, homePage, explorePage, personalPage);
 
         setContent(main);
+    }
+
+    private void makeProfilePage() {
+
     }
 
     private void makeHeader(String userid){
@@ -73,7 +84,7 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         hello.getStyle().set("font-family", "Georgia, serif");
         hello.getStyle().set("font-size", "18px");
         hello.getStyle().set("padding", "100px, 130px");
-        hello.getStyle().set("border-radius", "0px");
+
 //        Image homeImage = new Image("src/images/homeButton.png", "home image");
 //        homeImage.setWidth("100px");
 
@@ -86,7 +97,9 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         header.getStyle().set("background-color", "white");
         header.setAlignItems(FlexComponent.Alignment.CENTER);
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-
+        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
+        header.getStyle().set("border", "1px outset #E7E2E1");
+        header.getStyle().set("border-radius", "7px");
         main.add(header);
     }
 
@@ -94,7 +107,7 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
      * Create and set the post creating portion of the layout which is always present
      */
     private void makeCreatePostLayout() {
-        HorizontalLayout createPostLayout = new HorizontalLayout();
+        VerticalLayout createPostLayout = new VerticalLayout();
 
         createPostDialog.setHeaderTitle("Insert details to create a new post");
         createPostDialog.add(new MakePostView(user));
@@ -110,6 +123,9 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         createPostLayout.add(createPostButton);
         createPostLayout.setWidth("200px");
         createPostLayout.setHeight("60px");
+        createPostLayout.getStyle().set("border", "1px outset #E7E2E1");
+        createPostLayout.getStyle().set("border-radius", "7px");
+
         main.add(createPostLayout);
         main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, createPostLayout);
     }
@@ -166,6 +182,7 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         layout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         notification.add(layout);
+        notification.setDuration(2000);
 
         return notification;
     }

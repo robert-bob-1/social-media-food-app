@@ -3,6 +3,7 @@ package com.example.application.businesslogic;
 import com.example.application.dao.PostDAO;
 import com.example.application.dao.UserDAO;
 import com.example.application.model.Post;
+import com.example.application.model.User;
 
 import java.util.ArrayList;
 
@@ -46,5 +47,20 @@ public class PostBL {
 
     public ArrayList<Post> getAllPosts() {
         return postDAO.getAllPosts();
+    }
+
+    public void saveLikes(Post post, User currentUser, boolean alreadyLiked) {
+        if (alreadyLiked){
+            postDAO.setLikeStatus(currentUser.getUserID(), post.getID(), 0);
+            postDAO.saveLikes(post.getID(), post.getLikes());
+        }
+        else {
+            postDAO.setLikeStatus(currentUser.getUserID(), post.getID(), 1);
+            postDAO.saveLikes(post.getID(), post.getLikes());
+        }
+    }
+
+    public boolean getLikeStatus(User currentUser, Post post) {
+        return postDAO.getLikeStatus(currentUser.getUserID(), post.getID());
     }
 }
