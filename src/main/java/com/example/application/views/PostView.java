@@ -4,10 +4,12 @@ import com.example.application.businesslogic.PostBL;
 import com.example.application.businesslogic.UserBL;
 import com.example.application.model.Post;
 import com.example.application.model.User;
+import com.example.application.views.components.EditPostDialog;
 import com.example.application.views.components.FollowButton;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,7 +27,7 @@ public class PostView extends VerticalLayout {
     HorizontalLayout header = new HorizontalLayout();
     Label username = new Label("");
     FollowButton followButton;
-    Button editPostButton;
+    Button editPostButton = new Button();
 
     //post components
     VerticalLayout content = new VerticalLayout();
@@ -38,7 +40,7 @@ public class PostView extends VerticalLayout {
     Button likes = new Button("Likes: 0");
 
     //edit components
-
+    EditPostDialog editPostDialog;
 
     public PostView(Post post, User currentUser){
         this.post = post;
@@ -50,7 +52,6 @@ public class PostView extends VerticalLayout {
 
         makeContent();
         add(content);
-
 
 
         setAlignItems(Alignment.CENTER);
@@ -66,14 +67,19 @@ public class PostView extends VerticalLayout {
         username.getStyle().set("padding", "0px 20px");
 
         followButton = new FollowButton(this.post.getUser(), this.currentUser);
-
-//        if (currentUser.getUserID() == post.getUser().getUserID()){
-//            editPostButton.addClickListener( e -> {
-//
-//            });
-//        }
-
         header.add(username, followButton);
+
+        if (currentUser.getUserID() == post.getUser().getUserID()){
+            editPostButton.setIcon(new Icon("lumo", "edit"));
+            header.add(editPostButton);
+            editPostButton.getStyle().set("margin-left", "auto");
+            editPostButton.getStyle().set("padding", "10px 10px");
+            editPostButton.addClickListener( e -> {
+                editPostDialog = new EditPostDialog(currentUser, post);
+                editPostDialog.open();
+            });
+        }
+
         header.getStyle().set("background-color", "white");
         header.getStyle().set("border", "2px outset #CFCAC9"); //#2B3467
         header.getStyle().set("border-radius", "7px");

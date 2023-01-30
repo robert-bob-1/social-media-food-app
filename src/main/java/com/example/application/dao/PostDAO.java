@@ -146,6 +146,34 @@ public class PostDAO {
         return false;
     }
 
+    public boolean editPost(Post post) {
+        Connection con = null;
+        PreparedStatement insertStatement = null;
+        String query =
+                "UPDATE post " +
+                "SET title = ?, description = ?, picture = ?, details = ?," +
+                "ingredients = ?, preparation = ? " +
+                "WHERE ID = ? ";
+        ResultSet resultSet = null;
+
+        try {
+            con = ConnectionFactory.getConnection();
+            insertStatement= con.prepareStatement(query);
+            insertStatement.setString(1, post.getTitle());
+            insertStatement.setString(2, post.getDescription());
+            insertStatement.setString(3, post.getPicture());
+            insertStatement.setString(4, post.getDetails());
+            insertStatement.setString(5, post.getIngredients());
+            insertStatement.setString(6, post.getPreparation());
+            insertStatement.setString(7, String.valueOf(post.getID()));
+            insertStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private String createSelectFollowedPostsQuery() {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT * " +
@@ -304,6 +332,36 @@ public class PostDAO {
             statement = connection.prepareStatement(query);
             statement.setInt(1, postID);
             statement.setInt(2, userID);
+            statement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+    }
+
+
+    public void removePost(int id) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String queryPre1 = "DELETE FROM liked_posts " +
+                            "WHERE post_id = ?";
+        String query = "DELETE FROM post " +
+                       "WHERE ID = ?";
+
+
+        try {
+            connection = (Connection) ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(queryPre1);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, id);
             statement.executeUpdate();
 
         } catch (Exception e) {

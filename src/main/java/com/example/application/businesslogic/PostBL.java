@@ -34,10 +34,11 @@ public class PostBL {
     /**
      * Save a post to database
      */
-    public boolean savePost(Post post){ return postDAO.savePost(post);}
+    public boolean savePost(Post post){ return postDAO.savePost(post); }
 
-    /**
-     * Fetch a user's followed users, fetch all posts from those users, order by date, return id's.
+    public boolean editPost(Post post) { return postDAO.editPost(post); }
+
+    /**     * Fetch a user's followed users, fetch all posts from those users, order by date, return id's.
      * @param userID
      * @return
      */
@@ -62,5 +63,10 @@ public class PostBL {
 
     public boolean getLikeStatus(User currentUser, Post post) {
         return postDAO.getLikeStatus(currentUser.getUserID(), post.getID());
+    }
+
+
+    public void removePost(Post p) {
+        postDAO.removePost(p.getID());
     }
 }
