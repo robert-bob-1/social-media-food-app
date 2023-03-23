@@ -38,7 +38,7 @@ public class RegistrationForm extends VerticalLayout {
     Dialog dialogBox = new Dialog();
 
     public RegistrationForm() {
-        getStyle().set("background-color", "white");
+        getStyle().set("background-color", "#2B3467");
         title = new H3("Sign-up form");
         title.getStyle().set("padding", "5px 160px");
         firstName = new TextField("First name");
@@ -52,6 +52,8 @@ public class RegistrationForm extends VerticalLayout {
         passwordConfirm = new PasswordField("Confirm password");
         passwordConfirm.getStyle().set("padding", "5px 130px");
         description = new TextArea("Insert a description (optional)");
+        description.setWidth("220px");
+        description.setMaxHeight("200px");
         description.getStyle().set("padding", "5px 130px");
         image = new TextField("Insert link to profile picture (optional)");
         image.getStyle().set("padding", "5px 130px");
@@ -88,32 +90,11 @@ public class RegistrationForm extends VerticalLayout {
 
             }
         });
-        add(title, firstName, lastName, username, password,
-                passwordConfirm, errorMessageField,
+        add(title, firstName, lastName, username, password, passwordConfirm, description, image, errorMessageField,
                 submitButton);
 
         // Max width of the Form
         setMaxWidth("500px");
-
-
-
-        // Allow the form layout to be responsive.
-        // On device widths 0-490px we have one column.
-        // Otherwise, we have two columns.
-//        setResponsiveSteps(
-//                new ResponsiveStep("0", 1, ResponsiveStep.LabelsPosition.TOP),
-//                new ResponsiveStep("490px", 2, ResponsiveStep.LabelsPosition.TOP));
-//
-//        // These components always take full width
-//        setColspan(title, 2);
-//        setColspan(firstName, 1);
-//        setColspan(lastName, 1);
-//        setColspan(password, 1);
-//        setColspan(passwordConfirm, 1);
-//        setColspan(username, 1);
-//        setColspan(errorMessageField, 1);
-//        setColspan(submitButton, 1);
-
     }
 
     public PasswordField getPasswordField() {

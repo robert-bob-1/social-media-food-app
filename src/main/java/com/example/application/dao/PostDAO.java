@@ -226,7 +226,8 @@ public class PostDAO {
         ResultSet resultSet = null;
         String query = new String (
                 "SELECT * " +
-                "FROM post");
+                "FROM post " +
+                "ORDER BY datetime DESC");
 
         try {
             connection = (Connection) ConnectionFactory.getConnection();
@@ -368,5 +369,88 @@ public class PostDAO {
             ConnectionFactory.close(statement);
             ConnectionFactory.close(connection);
         }
+    }
+
+    public ArrayList<Post> getMostPopularPosts() {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String query =
+                "SELECT * " +
+                "FROM post " +
+                "WHERE datetime > now() - interval 24 hour " +
+                "ORDER BY likes DESC";
+
+        try {
+            connection = (Connection) ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
+
+            ArrayList<Post> postList = new ArrayList<>();
+            while (resultSet.next()){
+                Post post = new Post(
+                        Integer.parseInt(resultSet.getString(1)),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        Integer.parseInt(resultSet.getString(8)),
+                        resultSet.getString(9),
+                        userBL.getUser(resultSet.getString(10)));
+                postList.add(post);
+            }
+            return postList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+        return null;
+    }
+
+    public ArrayList<Post> getPostsByTitle(String searchCriteria) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String query = "SELECT * " +
+                "FROM post " +
+                "WHERE (title LIKE ?) ";
+
+        ResultSet resultSet = null;
+
+        try {
+            connection = ConnectionFactory.getConnection();
+            statement = connection.prepareStatement(query);
+            statement.setString(1, "%" + searchCriteria + "%");
+            resultSet = statement.executeQuery();
+            ArrayList<Post> postList = new ArrayList<>();
+            while (resultSet.next()){
+                Post post = new Post(
+                        Integer.parseInt(resultSet.getString(1)),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        Integer.parseInt(resultSet.getString(8)),
+                        resultSet.getString(9),
+                        userBL.getUser(resultSet.getString(10)));
+                postList.add(post);
+            }
+            return postList;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(resultSet);
+            ConnectionFactory.close(statement);
+            ConnectionFactory.close(connection);
+        }
+        return null;
     }
 }

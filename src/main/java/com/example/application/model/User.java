@@ -10,6 +10,7 @@ public class User {
     private String description = "No description set yet.";
     private String image = "https://play-lh.googleusercontent.com/DSA2hFJx9INOxXgMvd6TstVxe4UZKqHjMsGVRLNNXDsH-VkOodHfZ1hLtczp3udTvYU";
 
+    private boolean isAdmin = false;
     public User() {
     }
 
@@ -26,7 +27,51 @@ public class User {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.image = image;
+        if (image != null)
+            this.image = image;
+    }
+
+    public User(int userID, String firstName, String lastName, String username, String password, String description, String image) {
+        this.userID = userID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        if (description != null)
+            this.description = description;
+        if (image != null)
+            this.image = image;
+    }
+
+    //admin
+    public User(int userID, String firstName, String lastName, String username, String password, int role) {
+        this.userID = userID;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.isAdmin = role != 0;
+    }
+
+    public User(int userID, String firstName, String lastName, String username, String password, String description, String image, int role) {
+        this.userID = userID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.password = password;
+        if (description != null)
+            this.description = description;
+        if (image != null)
+            this.image = image;
+        this.isAdmin = role != 0;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public int getUserID() {

@@ -24,7 +24,7 @@ public class EditPostView extends VerticalLayout {
     Button editPostButton = new Button ("Edit post");
     Notification notification = new Notification("");
 
-    public EditPostView(User user, Post p){
+    public EditPostView(Post p){
         this.post = p;
 
         title.setValue(post.getTitle());

@@ -18,18 +18,14 @@ public class UserDAO {
         return sb.toString();
     }
 
-    private String createGetUserQuery() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT firstName, lastName, username, password, description " +
-                "FROM user " +
-                "WHERE ID = ?;");
-        return sb.toString();
-    }
 
     public User getUser(String userID) {
         Connection con = null;
         PreparedStatement selectStatement = null;
-        String query = createGetUserQuery();
+        String query =
+                "SELECT firstName, lastName, username, password, description, image, isAdmin " +
+                "FROM user " +
+                "WHERE ID = ?;";
         ResultSet resultSet = null;
 
         try {
@@ -39,8 +35,14 @@ public class UserDAO {
             resultSet = selectStatement.executeQuery();
 
             if (resultSet.next()) {
-                User u = new User(Integer.parseInt(userID), resultSet.getString(1), resultSet.getString(2),
-                        resultSet.getString(3), resultSet.getString(4));
+                User u = new User(Integer.parseInt(userID),
+                        resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getInt(7));
 
                 return u;
             }
@@ -249,6 +251,7 @@ public class UserDAO {
 
             statement = connection.prepareStatement(queryPre2);
             statement.setInt(1, u);
+            statement.setInt(2, u);
             statement.executeUpdate();
 
             statement = connection.prepareStatement(queryPre3);
@@ -270,5 +273,75 @@ public class UserDAO {
             ConnectionFactory.close(statement);
             ConnectionFactory.close(connection);
         }
+    }
+
+    public ArrayList<User> getUsersByName(String searchCriteria) {
+        Connection con = null;
+        PreparedStatement selectStatement = null;
+        String query = "SELECT * " +
+                "FROM user " +
+                "WHERE (firstName LIKE ?) " +
+                "   OR (lastName LIKE ?)" +
+                "   AND (isAdmin = 0) ";
+        ResultSet resultSet = null;
+
+        try {
+            con = ConnectionFactory.getConnection();
+            selectStatement = con.prepareStatement(query);
+            selectStatement.setString(1, "%" + searchCriteria + "%");
+            selectStatement.setString(2, "%" + searchCriteria + "%");
+            resultSet = selectStatement.executeQuery();
+
+            ArrayList<User> users = new ArrayList<>();
+            while (resultSet.next()) {
+                User u = new User(resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getInt(8));
+
+                users.add(u);
+            }
+            return users;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(selectStatement);
+            ConnectionFactory.close(con);
+        }
+        return null;
+    }
+
+    public boolean addAdmin(User user) {
+        Connection con = null;
+        PreparedStatement selectStatement = null;
+        String query =
+                "INSERT INTO user (firstName, lastName, username, password, isAdmin) " +
+                "VALUES (?,?,?,?,?)";
+        ResultSet resultSet = null;
+
+        try {
+            con = ConnectionFactory.getConnection();
+            selectStatement = con.prepareStatement(query);
+            selectStatement.setString(1, user.getFirstName());
+            selectStatement.setString(2, user.getLastName());
+            selectStatement.setString(3, user.getUsername());
+            selectStatement.setString(4, user.getPassword());
+            selectStatement.setInt   (5, 1);
+            selectStatement.executeUpdate();
+
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            ConnectionFactory.close(selectStatement);
+            ConnectionFactory.close(con);
+        }
+        return false;
     }
 }

@@ -4,7 +4,6 @@ import com.example.application.businesslogic.LoginBL;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -33,10 +32,10 @@ public class LoginView extends VerticalLayout {
         header.setAlignItems(Alignment.CENTER);
 
         login.addLoginListener(e -> {
-            boolean isUser = loginbl.validate(e.getUsername(), e.getPassword());
-            if (isUser) {
+            int role = loginbl.validate(e.getUsername(), e.getPassword());
+            if (role >= 0) {
                 loginbl.send();
-                int id = loginbl.getID(e.getUsername());
+                int id = loginbl.getID(e.getUsername(), e.getPassword());
                 UI.getCurrent().navigate(HomeView.class, new RouteParameters("userID", String.valueOf(id)));
             } else {
                 login.setError(true);

@@ -1,10 +1,8 @@
 package com.example.application.views.components;
 
 import com.example.application.businesslogic.UserBL;
-import com.example.application.model.Post;
 import com.example.application.model.User;
 import com.example.application.views.MainView;
-import com.example.application.views.RegisterView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -14,7 +12,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
-public class EditUserDialog extends Dialog {
+public class CreateAdminDialog extends Dialog {
     private User user;
     UserBL userBL = new UserBL();
 
@@ -22,60 +20,58 @@ public class EditUserDialog extends Dialog {
     VerticalLayout form = new VerticalLayout();
     TextField firstName = new TextField("First Name");
     TextField lastName = new TextField("Last Name");
-    TextField picture = new TextField("Image link");
     TextField username = new TextField("User name");
     TextField password = new TextField("Password");
-    TextArea description = new TextArea("Description");
 
-    Button editUserButton = new Button("Edit user");
+    Button addAdminButton = new Button("Add admin");
     Notification notification = new Notification("");
 
-    public EditUserDialog(User u) {
+    public CreateAdminDialog(User u) {
         this.user = u;
 
         firstName.setValue(user.getFirstName());
         lastName.setValue(user.getLastName());
-        picture.setValue(user.getImage());
         username.setValue(user.getUsername());
         password.setValue(user.getPassword());
-        description.setValue(user.getDescription());
 
-        editUserButton.addClickListener(e -> {
-
+        addAdminButton.addClickListener(e -> {
             user.setFirstName(firstName.getValue());
-            user.setDescription(description.getValue());
             user.setLastName(lastName.getValue());
             user.setUsername(username.getValue());
             user.setPassword(password.getValue());
-            user.setImage(picture.getValue());
 
-            if (userBL.editUser(user)) {
-                notification.setText("User edited succesfully!");
+            if (userBL.addAdmin(user)) {
+                notification.setText("Admin added succesfully!");
+                clearAll();
             } else {
-                notification.setText("User couldn't be edited!");
+                notification.setText("Admin couldn't be created!");
             }
             notification.open();
             notification.setDuration(2000);
+
+
 
             user = userBL.getUser(String.valueOf(user.getUserID()));
         });
 
 
-        form.add(firstName, lastName, username, password, picture, description, editUserButton);
+        form.add(firstName, lastName, username, password, addAdminButton);
         form.setWidth("600px");
         form.setAlignItems(FlexComponent.Alignment.STRETCH);
         form.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
 
-        setHeaderTitle("Edit user");
+        setHeaderTitle("Add admin");
         add(form);
 
         Button closeDialog = new Button("Close", l -> this.close());
-        Button removeUserButton = new Button ("Delete account",
-                l -> {
-                    this.close();
-                    userBL.removeUser(u);
-                    UI.getCurrent().navigate(MainView.class);
-                });
-        getFooter().add(removeUserButton, closeDialog);
+
+        getFooter().add(closeDialog);
+    }
+
+    public void clearAll(){
+        firstName.clear();
+        lastName.clear();
+        username.clear();
+        password.clear();
     }
 }

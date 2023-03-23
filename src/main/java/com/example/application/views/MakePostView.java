@@ -55,6 +55,8 @@ public class MakePostView extends VerticalLayout {
         setAlignItems(Alignment.STRETCH);
         setJustifyContentMode(JustifyContentMode.AROUND);
     }
+
+
     private void clearText(){
         title.clear();
         description.clear();

@@ -4,6 +4,8 @@ import com.example.application.businesslogic.PostBL;
 import com.example.application.businesslogic.UserBL;
 import com.example.application.model.Post;
 import com.example.application.model.User;
+import com.example.application.views.components.CreateAdminDialog;
+import com.example.application.views.pages.ExploreView;
 import com.example.application.views.pages.ProfileView;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -45,7 +47,9 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
     private final Button homeButton = new Button("Home");
     private final Button exploreButton = new Button("Explore");
     private final Button profileButton = new Button("Profile");
+    private final Button createAdminButton = new Button("Create admin");
 
+    private CreateAdminDialog createAdminDialog;
     private Dialog createPostDialog = new Dialog();
     private Button createPostButton;
 
@@ -60,47 +64,68 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
 
         homeButton.addClickListener(e -> {
             makeHomePage();
+
+            main.remove(explorePage);
             main.remove(profilePage);
+            main.remove(homePage);
+
             main.add(homePage);
         });
         homePage.setAlignItems(FlexComponent.Alignment.CENTER);
         homePage.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
 
         exploreButton.addClickListener( e -> {
+            explorePage = new ExploreView(user);
 
+            main.remove(explorePage);
+            main.remove(homePage);
+            main.remove(profilePage);
+            main.add(explorePage);
         });
 
         profileButton.addClickListener( e -> {
             profilePage = new ProfileView(user, user);
-//            currentPage = profilePage;
+
+            main.remove(profilePage);
+            main.remove(explorePage);
             main.remove(homePage);
             main.add(profilePage);
         });
 
-        main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, homePage, explorePage, profilePage);
+        createAdminButton.addClickListener( e -> {
+            createAdminDialog = new CreateAdminDialog(user);
+            createAdminDialog.open();
+            createAdminDialog.clearAll();
+        });
 
+        main.setHorizontalComponentAlignment(FlexComponent.Alignment.CENTER, homePage, explorePage, profilePage);
         setContent(main);
     }
 
-    private void makeProfilePage() {
 
-    }
-
-    private void makeHeader(String userid){
+    private void makeHeader(){
         HorizontalLayout header = new HorizontalLayout();
-        H3 hello = new H3("Welcome, chef " + userBL.getUsername(userid) + "!");
+
+        String welcomeText;
+        if(!user.isAdmin())
+            welcomeText = "Welcome, chef " + user.getFirstName() + " " + user.getLastName() + "!";
+        else
+            welcomeText = "Welcome, admin!";
+
+        H3 hello = new H3(welcomeText);
         hello.getStyle().set("font-family", "Georgia, serif");
         hello.getStyle().set("font-size", "18px");
         hello.getStyle().set("padding", "100px, 130px");
-
-//        Image homeImage = new Image("src/images/homeButton.png", "home image");
-//        homeImage.setWidth("100px");
 
         homeButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         exploreButton.addThemeVariants(ButtonVariant.LUMO_ICON);
         profileButton.addThemeVariants(ButtonVariant.LUMO_ICON);
 
-        header.add(hello, homeButton, exploreButton, profileButton);
+        header.add(hello, homeButton, exploreButton);
+        if(!user.isAdmin())
+            header.add(profileButton);
+        else
+            header.add(createAdminButton);
         header.setSizeFull();
         header.getStyle().set("background-color", "white");
         header.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -159,13 +184,14 @@ public class HomeView extends AppLayout implements Observer, BeforeEnterObserver
         userID = beforeEnterEvent.getRouteParameters().get("userID").orElse("nu s-a primit id");
         user = userBL.getUser(userID);
 
-        makeHeader(userID);
-        makeCreatePostLayout();
+        makeHeader();
+        if(!user.isAdmin())
+            makeCreatePostLayout();
+
         makeHomePage();
 
         main.add(homePage);
     }
-
 
     @Override
     public void update(Observable o, Object arg) {

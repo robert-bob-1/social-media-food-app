@@ -47,4 +47,14 @@ public class UserBL {
     public void removeUser(User u) {
         user.removeUser(u.getUserID());
     }
+
+    public ArrayList<User> getUsersByName(String searchCriteria) {
+        return user.getUsersByName(searchCriteria);
+    }
+
+    public boolean addAdmin(User u) {
+        u.setAdmin(true);
+
+        return user.addAdmin(u);
+    }
 }

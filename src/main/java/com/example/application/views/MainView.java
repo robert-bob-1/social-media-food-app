@@ -59,8 +59,6 @@ public class MainView extends VerticalLayout {
         btnLogin.getStyle().set("font-size", "30px");
         btnRegister.getStyle().set("padding", "30px 50px");
         btnLogin.getStyle().set("padding", "30px 50px");
-//        btnLogin.getStyle().set("border-radius", "0px");
-//        btnRegister.getStyle().set("border-radius", "0px");
 
         introduction.getStyle().set("font-family", "Georgia");
         introduction.getStyle().set("font-size", "36px");

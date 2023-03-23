@@ -69,4 +69,12 @@ public class PostBL {
     public void removePost(Post p) {
         postDAO.removePost(p.getID());
     }
+
+    public ArrayList<Post> getMostPopularPosts() {
+        return postDAO.getMostPopularPosts();
+    }
+
+    public ArrayList<Post> getPostsByTitle(String searchCriteria) {
+        return postDAO.getPostsByTitle(searchCriteria);
+    }
 }

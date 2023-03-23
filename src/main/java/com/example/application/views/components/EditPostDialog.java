@@ -13,8 +13,8 @@ public class EditPostDialog extends Dialog {
     private PostBL postBL = new PostBL();
 
     private Post post;
-    public EditPostDialog(User user, Post p){
-        editPostView = new EditPostView(user, p);
+    public EditPostDialog(Post p){
+        editPostView = new EditPostView( p);
         post = p;
         setHeaderTitle("Edit post");
         add(editPostView);

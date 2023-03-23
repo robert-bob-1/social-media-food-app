@@ -6,6 +6,7 @@ import com.example.application.model.Post;
 import com.example.application.model.User;
 import com.example.application.views.components.EditPostDialog;
 import com.example.application.views.components.FollowButton;
+import com.example.application.views.components.ProfileDialog;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Image;
@@ -26,10 +27,10 @@ public class PostView extends VerticalLayout {
     //header components
     HorizontalLayout header = new HorizontalLayout();
     Image userImage;
-    Label username = new Label("");
+    Button username = new Button("");
     FollowButton followButton;
     Button editPostButton = new Button();
-    Dialog profileDialog = new Dialog();
+    ProfileDialog profileDialog;
 
     //post components
     VerticalLayout content = new VerticalLayout();
@@ -43,7 +44,6 @@ public class PostView extends VerticalLayout {
 
     //edit components
     EditPostDialog editPostDialog;
-
     public PostView(Post post, User currentUser){
         this.post = post;
         this.currentUser = currentUser;
@@ -69,24 +69,26 @@ public class PostView extends VerticalLayout {
 
         username.setText(this.post.getUser().getFirstName() + " " + this.post.getUser().getLastName());
         username.getStyle().set("padding", "0px 0px");
+        username.getStyle().set("background-color", "white");
 
         followButton = new FollowButton(this.post.getUser(), this.currentUser);
         header.add(userImage, username, followButton);
 
-        if (currentUser.getUserID() == post.getUser().getUserID()){
+        if (currentUser.getUserID() == post.getUser().getUserID() || currentUser.isAdmin()){
             editPostButton.setIcon(new Icon("lumo", "edit"));
             header.add(editPostButton);
             editPostButton.getStyle().set("margin-left", "auto");
             editPostButton.getStyle().set("padding", "10px 10px");
             editPostButton.addClickListener( e -> {
-                editPostDialog = new EditPostDialog(currentUser, post);
+                editPostDialog = new EditPostDialog(post);
                 editPostDialog.open();
             });
         }
 
-        header.addClickListener( e -> {
-
-        })
+        username.addClickListener( e -> {
+            profileDialog = new ProfileDialog(post.getUser(), currentUser);
+            profileDialog.open();
+        });
 
         header.getStyle().set("background-color", "white");
         header.getStyle().set("border", "2px outset #CFCAC9"); //#2B3467

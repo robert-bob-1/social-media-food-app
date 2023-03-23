@@ -14,7 +14,7 @@ public class FollowButton extends Button {
         getStyle().set("padding", "20px");
         getStyle().set("border", "2px ");
 
-        if (followedUser.getUserID() == follower.getUserID()){
+        if (followedUser.getUserID() == follower.getUserID() || follower.isAdmin()){
             this.setVisible(false);
         } else {
             isFollowed = userBL.getFollowStatus(followedUser, follower);

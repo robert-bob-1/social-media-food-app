@@ -37,15 +37,13 @@ public class ProfileView extends VerticalLayout {
         this.currentUser = currentUser;
 
         //add extra buttons for those visiting their own page
-        if (visitedUser.getUserID() == currentUser.getUserID()){
+        if (visitedUser.getUserID() == currentUser.getUserID() || currentUser.isAdmin()){
             makePersonalView();
             add(personalView);
         }
 
         makeStandardView();
         add(standardView);
-
-
 
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.AROUND);
